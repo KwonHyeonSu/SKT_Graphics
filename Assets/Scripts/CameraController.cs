@@ -48,8 +48,8 @@ namespace SKT
 
 
 
-            VC.gameObject.GetComponent<CinemachineConfiner>().m_BoundingShape2D = boundingBox;
-            VC.gameObject.GetComponent<CinemachineConfiner>().m_ConfineScreenEdges = false;
+            // VC.gameObject.GetComponent<CinemachineConfiner>().m_BoundingShape2D = boundingBox;
+            // VC.gameObject.GetComponent<CinemachineConfiner>().m_ConfineScreenEdges = false;
         }
 
         public void GetOutStore()
@@ -63,8 +63,8 @@ namespace SKT
 
 
 
-            VC.gameObject.GetComponent<CinemachineConfiner>().m_BoundingShape2D = mapBound;
-            VC.gameObject.GetComponent<CinemachineConfiner>().m_ConfineScreenEdges = true;
+            // VC.gameObject.GetComponent<CinemachineConfiner>().m_BoundingShape2D = mapBound;
+            // VC.gameObject.GetComponent<CinemachineConfiner>().m_ConfineScreenEdges = true;
         }
 
 

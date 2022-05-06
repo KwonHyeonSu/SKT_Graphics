@@ -175,7 +175,7 @@ namespace SKT
         #region 충돌 감지
         ///<summary>
         ///플레이어와 Trigger 충돌이 발생했을 때 가이드를 표시해줌
-        ///
+        ///</summary>
         private void OnTriggerEnter2D(Collider2D other) {
             
             // Guide
@@ -243,26 +243,51 @@ namespace SKT
         #endregion
 
 
+        //버그발생 (상점 왔다갔다 지속적으로 되버림)
+        //버그방지용 함수
+        private bool canGetInandOut = true;
+        private float t_canGetInandOut = 0.0f;
 
         //상점에 들어갔을 때
         public void GetInStore(GameObject store)
         {
-            cameraController.GetInStore(store.transform, store.GetComponent<Collider2D>());
+            if(!canGetInandOut) return;
+
+            Debug.Log("getin store");
             
-            //플레이어 작게
-            this.transform.DOMoveX(this.transform.position.x + dir.x, 0.2f).SetEase(Ease.OutExpo);
-            this.transform.DOScale(new Vector3(0.2f, 0.2f, 1), 0.5f);
+            this.transform.position = this.transform.position + new Vector3(dir.x * 2, dir.y, 0); //버그 방지 위치이동
+            this.transform.localScale = new Vector3(0.1f, 0.1f, 1); //플레이어 작게
+
+            cameraController.GetInStore(store.transform, store.GetComponent<Collider2D>());
             //속도 줄이기
             speed = 1.0f;
+
+            canGetInandOut = false;
+            StartCoroutine(canGetInandOut_Setting());
         }
 
         //상점에서 나왔을 때
         public void GetOutStore()
         {
+            if(!canGetInandOut) return;
+
+            Debug.Log("getout store");
+
+            this.transform.position = this.transform.position + new Vector3(dir.x * 2, dir.y, 0); //버그 방지 위치이동
+            
+            this.transform.localScale = new Vector3(0.5f, 0.5f, 1); //플레이어 크게
+
             cameraController.GetOutStore();
-            this.transform.DOMoveX(this.transform.position.x + dir.x, 0.1f).SetEase(Ease.OutExpo);
-            this.transform.DOScale(new Vector3(0.5f, 0.5f, 1), 0.5f);
             speed = 5.0f;
+
+            canGetInandOut = false;
+            StartCoroutine(canGetInandOut_Setting());
+        }
+
+        IEnumerator canGetInandOut_Setting()
+        {
+            yield return new WaitForSeconds(0.5f);
+            canGetInandOut = true;
         }
 
     }

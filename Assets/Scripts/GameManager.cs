@@ -2,6 +2,7 @@ namespace SKT
 {
     using System.Collections.Generic;
     using UnityEngine;
+    using TMPro;
 
     public enum GameState
     {
@@ -49,7 +50,7 @@ namespace SKT
         public List<GameObject> Sectors; // 맵의 여러 섹터들 (건물을 지을 수 있는 곳)
 
         [Header("할당해주기")]
-        public Transform Buildings_parent;
+        public Transform Interactable;
         
         //상호작용 델리게이트
         public delegate void InteractDelegate();
@@ -111,12 +112,15 @@ namespace SKT
         {
             player.GetInStore(Sectors[sectorNum-1]);
 
+            //Sector에 이름을 바꾼다.
+            Sectors[sectorNum-1].transform.GetChild(0).GetComponent<TextMeshPro>().text = storeName;
+
             //빌딩을 짓고 컴포넌트를 할당해준다.
             GameObject go = new GameObject("Building_" + sectorNum);
             go.AddComponent<SpriteRenderer>().sprite = storeSprite;
             go.AddComponent<BoxCollider2D>().isTrigger = true;
             go.transform.position = Sectors[sectorNum-1].transform.position;
-            go.transform.SetParent(Buildings_parent);
+            go.transform.SetParent(Sectors[sectorNum-1].transform);
 
 
             //sector sprite 끄고 layer 바꾸기
