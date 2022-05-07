@@ -45,18 +45,11 @@ namespace SKT
 
         void Start()
         {
-            Allocate();
 
             //게임 시작할 때 가이드를 연다.
             popUpManager.ShowPopUp(popUpManager.Guide);
         }
 
-
-        //컴포넌트 할당
-        void Allocate()
-        {
-            Select_Charactor = GameObject.Find("Canvas").transform.Find("Select_Charactor").gameObject;
-        }
 
         #region 버튼
         public void Btn_Astrounaut()
@@ -94,13 +87,18 @@ namespace SKT
         /// 상호작용 가능 UI 표시
         /// -> 왔다갔다 하는 오브젝트 띄우기
         ///</summary>
-        public void Interacting(bool flag, Vector3 pos)
+        public void Interacting(bool flag, Vector3 pos, bool ItemMode = false)
         {
             if(pos == null) pos = Vector3.zero;
 
             //메시지 아이콘 활성화
             messageIcon.SetActive(flag);
-            messageIcon.transform.localPosition = pos;
+            messageIcon.transform.position = pos;
+            if(ItemMode)
+            {
+                messageIcon.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+            }
+            else messageIcon.transform.localScale = Vector3.one;
 
 
             //E키 가이드 버튼 활성화

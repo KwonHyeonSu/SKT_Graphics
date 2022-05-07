@@ -1,6 +1,5 @@
 namespace SKT
 {
-    using UnityEngine;
     public class IdleState : IState
     {
         private Player player;

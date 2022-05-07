@@ -32,11 +32,8 @@ namespace SKT
             VC.Follow = target;
         }
 
-        ///<params>
-        /// store => 해당 store위치에 카메라를 고정한다.
-        /// 
-        ///</params>
-        public void GetInStore(Transform store, Collider2D boundingBox)
+
+        public void GetInStore(Collider2D boundingBox)
         {
             //확대
             float _score = 15.0f;
@@ -44,12 +41,6 @@ namespace SKT
             t.OnUpdate(()=>{
                 VC.m_Lens.OrthographicSize = _score;
             });
-
-
-
-
-            // VC.gameObject.GetComponent<CinemachineConfiner>().m_BoundingShape2D = boundingBox;
-            // VC.gameObject.GetComponent<CinemachineConfiner>().m_ConfineScreenEdges = false;
         }
 
         public void GetOutStore()
@@ -61,10 +52,6 @@ namespace SKT
                 VC.m_Lens.OrthographicSize = _score;
             });
 
-
-
-            // VC.gameObject.GetComponent<CinemachineConfiner>().m_BoundingShape2D = mapBound;
-            // VC.gameObject.GetComponent<CinemachineConfiner>().m_ConfineScreenEdges = true;
         }
 
 

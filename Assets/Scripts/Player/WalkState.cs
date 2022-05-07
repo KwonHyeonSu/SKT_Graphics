@@ -33,7 +33,7 @@ namespace SKT
         }
 
         //움직일 때 충돌처리를 말끔하게 하기 위함 (Raycast)
-        //"body" 태그와 부딪힐 때 움직임 제한
+        //"body" 레이어와 부딪힐 때 움직임 제한
         private bool CollitionDetect(Vector2 dir)
         {
             RaycastHit2D[] hits = Physics2D.RaycastAll(player.transform.position, dir, 1.0f);

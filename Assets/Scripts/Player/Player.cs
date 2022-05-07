@@ -7,7 +7,9 @@ namespace SKT
     //Player State를 관장하는 인터페이스
     public interface IState
     {
-        // OnEnter에 파라미터가 들어간 이유 : 각 State클래스 내에서 필요한 함수를 player를 통해 접근할 수 있도록 하기 위해
+        // OnEnter에 파라미터가 들어간 이유
+        // 각 State클래스 내에서 필요한 함수를
+        // player를 i통해 접근할 수 있도록 하기 위해
         void OnEnter(Player player); 
         void Update();
         void OnExit();
@@ -214,6 +216,22 @@ namespace SKT
 
 
 
+            // Product
+            if(other.gameObject.layer == LayerMask.NameToLayer("Product"))
+            {
+                Debug.Log("Product Layer 충돌");
+
+
+                Vector3 spawnPos = new Vector3( other.transform.position.x, 
+                other.transform.position.y + 0.5f);
+
+                //상호작용 활성화
+                UIManager.Instance.Interacting(true, spawnPos, true);
+
+                //상호작용 함수 적용 (델리게이트)
+                GameManager.Instance.interactFunc = other.GetComponent<Item>().Interact_Item;
+            }
+
 
         }
 
@@ -247,6 +265,8 @@ namespace SKT
         //버그방지용 함수
         private bool canGetInandOut = true;
         private float t_canGetInandOut = 0.0f;
+        private SpriteRenderer building_SpriteRenderer = null;
+        private GameObject InnerProduct;
 
         //상점에 들어갔을 때
         public void GetInStore(GameObject store)
@@ -258,12 +278,42 @@ namespace SKT
             this.transform.position = this.transform.position + new Vector3(dir.x * 2, dir.y, 0); //버그 방지 위치이동
             this.transform.localScale = new Vector3(0.1f, 0.1f, 1); //플레이어 작게
 
-            cameraController.GetInStore(store.transform, store.GetComponent<Collider2D>());
+            cameraController.GetInStore(store.GetComponent<Collider2D>());
             //속도 줄이기
             speed = 1.0f;
 
+            //버그 방지용
             canGetInandOut = false;
             StartCoroutine(canGetInandOut_Setting());
+
+            //빌딩 스프라이트 해제
+            StartCoroutine(BuildingFadeOut(store));
+
+            //내부 상품 보이게 하기
+            try
+            {
+                InnerProduct = store.transform.Find("Products").gameObject;
+            }
+            catch{
+                Debug.LogWarning("InnerProduct를 못찾음. 새로 생성중...");
+            }
+
+            //없을 경우 새로 생성
+            if(null == InnerProduct)
+            {
+                InnerProduct = Resources.Load("Products") as GameObject;
+                InnerProduct = Instantiate(InnerProduct, Vector3.zero, Quaternion.identity);
+                InnerProduct.transform.SetParent(store.transform);
+                InnerProduct.transform.localScale = Vector3.one;
+                InnerProduct.transform.localPosition = Vector3.zero;
+                InnerProduct.name = "Products";
+            }
+
+            else
+            {
+                InnerProduct.SetActive(true);
+            }
+            
         }
 
         //상점에서 나왔을 때
@@ -280,14 +330,48 @@ namespace SKT
             cameraController.GetOutStore();
             speed = 5.0f;
 
+            //버그 방지용
             canGetInandOut = false;
             StartCoroutine(canGetInandOut_Setting());
+
+            //빌딩 스프라이트 해제
+            building_SpriteRenderer.DOFade(1, 0.5f);
+            building_SpriteRenderer = null;
+
+            //내부 상품 숨기기
+            InnerProduct.SetActive(false);
+            InnerProduct = null;
+
         }
 
         IEnumerator canGetInandOut_Setting()
         {
             yield return new WaitForSeconds(0.5f);
             canGetInandOut = true;
+        }
+
+        IEnumerator BuildingFadeOut(GameObject store)
+        {
+            while(true)
+            {
+                if(building_SpriteRenderer == null)
+                {
+                    try{
+                        building_SpriteRenderer = store.transform.Find("Building").GetComponent<SpriteRenderer>();
+
+                    }catch{
+                        Debug.LogWarning("빌딩 찾는중...");
+                    }
+                }
+                else
+                {
+                    break;
+                }
+                yield return new WaitForSeconds(0.1f);
+            }
+
+            building_SpriteRenderer.DOFade(0, 0.5f);
+
         }
 
     }

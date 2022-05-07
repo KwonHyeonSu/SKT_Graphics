@@ -116,7 +116,7 @@ namespace SKT
             Sectors[sectorNum-1].transform.GetChild(0).GetComponent<TextMeshPro>().text = storeName;
 
             //빌딩을 짓고 컴포넌트를 할당해준다.
-            GameObject go = new GameObject("Building_" + sectorNum);
+            GameObject go = new GameObject("Building");
             go.AddComponent<SpriteRenderer>().sprite = storeSprite;
             go.AddComponent<BoxCollider2D>().isTrigger = true;
             go.transform.position = Sectors[sectorNum-1].transform.position;
@@ -127,6 +127,13 @@ namespace SKT
             Sectors[sectorNum-1].GetComponent<SpriteRenderer>().enabled = false;
             Sectors[sectorNum-1].layer = LayerMask.NameToLayer("Store");
             UIManager.Instance.Interacting(false, Vector3.zero);
+        }
+
+
+        //게임종료
+        public void GameExit()
+        {
+            Application.Quit();
         }
 
         
